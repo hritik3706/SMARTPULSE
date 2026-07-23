@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root{
+  --bg:#050505;
+  --surface:#0f0f0f;
+  --surface2:#141414;
+  --border:#232323;
+
+  --rust:#d84e27;
+  --rust2:#ff7849;
+
+  --green:#10b981;
+  --blue:#3b82f6;
+  --purple:#8b5cf6;
+  --yellow:#f59e0b;
+  --red:#ef4444;
+
+  --text:#ffffff;
+  --muted:#8b8b8b;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,
+body,
+#root{
+  width:100%;
+  min-height:100vh;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:
+  linear-gradient(
+      rgba(255,255,255,.015) 1px,
+      transparent 1px
+  ),
+  linear-gradient(
+      90deg,
+      rgba(255,255,255,.015) 1px,
+      transparent 1px
+  ),
+  #050505;
+
+  background-size:40px 40px;
+  color:white;
+}
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-track{
+  background:#0a0a0a;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#202020;
+  border-radius:20px;
+}
+
+.glass{
+  background:rgba(255,255,255,.03);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.card{
+  background:#0d0d0d;
+  border:1px solid #1f1f1f;
+  border-radius:24px;
+}
+
+.orange-glow{
+  box-shadow:
+  0 0 0 1px rgba(216,78,39,.2),
+  0 0 30px rgba(216,78,39,.15);
+}
+
+.green-glow{
+  box-shadow:
+  0 0 0 1px rgba(16,185,129,.2),
+  0 0 30px rgba(16,185,129,.15);
+}
+
+.blue-glow{
+  box-shadow:
+  0 0 0 1px rgba(59,130,246,.2),
+  0 0 30px rgba(59,130,246,.15);
+}
+
+.purple-glow{
+  box-shadow:
+  0 0 0 1px rgba(139,92,246,.2),
+  0 0 30px rgba(139,92,246,.15);
+}
+
+.metric-card{
+  transition:.3s;
+}
+
+.metric-card:hover{
+  transform:translateY(-4px);
+}
+
+.process-logo{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  color:white;
+}
+
+.terminal-line{
+  animation:fadein .4s ease;
+}
+
+@keyframes fadein{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.rust-button{
+  background:var(--rust);
+  border:none;
+  color:white;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.rust-button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 25px rgba(216,78,39,.4);
+}
+
+.health-ring{
+  filter:drop-shadow(0 0 20px rgba(216,78,39,.35));
+}
