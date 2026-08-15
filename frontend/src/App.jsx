@@ -1,366 +1,140 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { Toaster, toast } from "react-hot-toast";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { motion } from "framer-motion";
+import { AppShell } from "./components/AppShell";
+import { useSystemData } from "./hooks/useSystemData";
+import { useSettings } from "./hooks/useSettings";
+import { useTheme } from "./hooks/useTheme";
+import { Advisor } from "./pages/Advisor";
+import { AIDoctor } from "./pages/AIDoctor";
+import { Dashboard } from "./pages/Dashboard";
+import { Optimizer } from "./pages/Optimizer";
+import { Performance } from "./pages/Performance";
+import { Processes } from "./pages/Processes";
+import { Reports } from "./pages/Reports";
+import { Settings } from "./pages/Settings";
 
-import Dashboard from "./components/Dashboard";
-import Performance from "./components/Performance";
-import Processes from "./components/Processes";
-import AI from "./components/AI";
-
-const API = "http://127.0.0.1:5000";
+const PATHS = {
+  "/": "dashboard",
+  "/performance": "performance",
+  "/processes": "processes",
+  "/doctor": "doctor",
+  "/optimizer": "optimizer",
+  "/advisor": "advisor",
+  "/reports": "reports",
+  "/settings": "settings",
+};
 
 export default function App() {
+  const { settings, update } = useSettings();
+  const { resolved } = useTheme();
+  const system = useSystemData(settings.interval);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const page = PATHS[location.pathname] || "dashboard";
+  const [mobile, setMobile] = useState(() => window.innerWidth <= 900);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const collapsed = Boolean(settings.sidebarCollapsed);
 
-  const [metrics, setMetrics] = useState(null);
-
-  const [ai, setAI] = useState(null);
-
-  const [loading, setLoading] = useState(true);
-
-  const [history, setHistory] = useState({
-
-    cpu: [],
-
-    ram: [],
-
-    gpu: [],
-
-    disk: []
-
-  });
-
-  async function loadHealth() {
-
-    try {
-
-      const res = await axios.get(`${API}/api/health`);
-
-      const live = res.data.metrics;
-
-      setMetrics(live);
-
-      setAI(res.data.ai);
-
-      setHistory(prev => ({
-
-        cpu: [
-
-          ...prev.cpu,
-
-          {
-
-            time: new Date().toLocaleTimeString(),
-
-            value: live.cpu
-
-          }
-
-        ].slice(-60),
-
-        ram: [
-
-          ...prev.ram,
-
-          {
-
-            time: new Date().toLocaleTimeString(),
-
-            value: live.ram
-
-          }
-
-        ].slice(-60),
-
-        gpu: [
-
-          ...prev.gpu,
-
-          {
-
-            time: new Date().toLocaleTimeString(),
-
-            value: live.gpu
-
-          }
-
-        ].slice(-60),
-
-        disk: [
-
-          ...prev.disk,
-
-          {
-
-            time: new Date().toLocaleTimeString(),
-
-            value: live.disk
-
-          }
-
-        ].slice(-60)
-
-      }));
-
-      setLoading(false);
-
+  useEffect(() => {
+    function onResize() {
+      const isMobile = window.innerWidth <= 900;
+      setMobile(isMobile);
+      if (!isMobile) setSidebarOpen(false);
     }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
-    catch(err){
-
-      console.log(err);
-
-      toast.error("Backend Offline");
-
-    }
-
+  function onNavigate(next) {
+    navigate(next === "dashboard" ? "/" : `/${next}`);
+    setSidebarOpen(false);
   }
 
-  useEffect(()=>{
-
-      loadHealth();
-
-      const timer=setInterval(loadHealth,1000);
-
-      return ()=>clearInterval(timer);
-
-  },[]);  async function optimizePC() {
-
-    try {
-
-      const res = await axios.post(`${API}/api/optimize`);
-
-      toast.success(
-        res.data.message ||
-        "Optimization Complete"
-      );
-
-      loadHealth();
-
-    }
-
-    catch {
-
-      toast.error(
-        "Optimization Failed"
-      );
-
-    }
-
+  function onToggleSidebar() {
+    if (mobile) setSidebarOpen((open) => !open);
+    else update({ sidebarCollapsed: !collapsed });
   }
 
-  async function exportReport() {
-
-    try {
-
-      const res =
-        await axios.post(
-          `${API}/api/report`
-        );
-
-      console.log(res.data);
-
-      toast.success(
-        "AI Report Generated"
-      );
-
-    }
-
-    catch {
-
-      toast.error(
-        "Report Generation Failed"
-      );
-
-    }
-
-  }
-
-  async function killProcess(pid){
-
-    try{
-
-      const res =
-      await axios.post(
-
-        `${API}/api/kill`,
-
-        {
-
-          pid
-
-        }
-
-      );
-
-      toast.success(
-        res.data.message
-      );
-
-      loadHealth();
-
-    }
-
-    catch{
-
-      toast.error(
-        "Cannot Kill Process"
-      );
-
-    }
-
-  }
-
-  async function getUpgradeAdvice(
-
-      budget
-
-  ){
-
-      try{
-
-          const res =
-          await axios.post(
-
-              `${API}/api/advise`,
-
-              {
-
-                  budget
-
-              }
-
-          );
-
-          return res.data;
-
-      }
-
-      catch{
-
-          toast.error(
-              "Advisor Offline"
-          );
-
-          return null;
-
-      }
-
-  }
-
-  if(
-
-      loading ||
-
-      !metrics ||
-
-      !ai
-
-  ){
-
-      return(
-
-          <>
-
-              <Toaster
-                  position="top-right"
-              />
-
-              <div
-
-                  style={{
-
-                      minHeight:"100vh",
-
-                      display:"flex",
-
-                      justifyContent:"center",
-
-                      alignItems:"center",
-
-                      color:"white",
-
-                      fontSize:34,
-
-                      fontWeight:800
-
-                  }}
-
-              >
-
-                  SMARTPULSE Loading...
-
-              </div>
-
-          </>
-
-      );
-
-  }
-
-  return(
-
-      <>
-
-          <Toaster
-              position="top-right"
-          />
-
-          <main
-
-              style={{
-
-                  maxWidth:1800,
-
-                  margin:"0 auto",
-
-                  padding:30
-
-              }}
-
-          >
-
-              <Dashboard
-
-                  metrics={metrics}
-
-                  ai={ai}
-
-                  optimizePC={optimizePC}
-
-                  exportReport={exportReport}
-
-              />
-
-              <Performance
-
-                  metrics={metrics}
-
-                  history={history}
-
-              />
-
-              <Processes
-
-                  processes={metrics.processes}
-
-                  killProcess={killProcess}
-
-              />
-
-              <AI
-
-                  ai={ai}
-
-                  metrics={metrics}
-
-                  advisor={getUpgradeAdvice}
-
-              />
-
-          </main>
-
-      </>
-
+  const shared = {
+    metrics: system.metrics,
+    ai: system.ai,
+    history: system.history,
+    logs: system.logs,
+    loading: system.loading,
+    online: system.online,
+    interval: settings.interval,
+    onRetry: system.retry,
+  };
+
+  return (
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: resolved === "dark" ? "#111111" : "#ffffff",
+            color: resolved === "dark" ? "#f5f5f5" : "#1a2233",
+            border: `1px solid ${resolved === "dark" ? "#222222" : "#e6edf5"}`,
+            fontFamily: "Plus Jakarta Sans, Segoe UI, sans-serif",
+            fontSize: 15,
+          },
+        }}
+      />
+      <AppShell
+        page={page}
+        onNavigate={onNavigate}
+        collapsed={collapsed}
+        onToggleSidebar={onToggleSidebar}
+        sidebarOpen={sidebarOpen}
+        mobile={mobile}
+        online={system.online}
+        lastUpdated={system.lastUpdated}
+        metrics={system.metrics}
+        ai={system.ai}
+      >
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={(
+                <Dashboard
+                  {...shared}
+                  processes={system.processes}
+                  displayName={settings.displayName || "Hritik"}
+                  onNavigate={onNavigate}
+                />
+              )}
+            />
+            <Route path="/performance" element={<Performance {...shared} />} />
+            <Route
+              path="/processes"
+              element={(
+                <Processes
+                  processes={system.processes}
+                  processCount={system.processCount}
+                  loading={system.loading}
+                  online={system.online}
+                  onRetry={system.retry}
+                  onKilled={system.refreshProcesses}
+                />
+              )}
+            />
+            <Route path="/doctor" element={<AIDoctor ai={system.ai} metrics={system.metrics} loading={system.loading} online={system.online} onRetry={system.retry} onRefresh={system.refreshAi} />} />
+            <Route path="/optimizer" element={<Optimizer online={system.online} onRetry={system.retry} />} />
+            <Route path="/advisor" element={<Advisor metrics={system.metrics} online={system.online} onRetry={system.retry} />} />
+            <Route path="/reports" element={<Reports ai={system.ai} online={system.online} onRetry={system.retry} />} />
+            <Route path="/settings" element={<Settings settings={settings} update={update} online={system.online} />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </motion.div>
+      </AppShell>
+    </>
   );
-
 }

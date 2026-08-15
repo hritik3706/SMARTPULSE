@@ -1,16 +1,11 @@
-from monitor import get_system_metrics
-from jarvis import generate_ai_report
+from monitor import get_metrics as get_system_metrics
+from ai_engine import analyze
 
 
 def get_system_health():
-
     metrics = get_system_metrics()
-
-    ai = generate_ai_report(
-        metrics
-    )
-
+    ai = analyze(metrics)
     return {
         "metrics": metrics,
-        "ai": ai
+        "ai": ai,
     }
