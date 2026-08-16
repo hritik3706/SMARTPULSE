@@ -42,5 +42,16 @@ export function ThemeProvider({ children }) {
 }
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  const value = useContext(ThemeContext);
+  if (!value) {
+    return {
+      mode: "light",
+      resolved: "light",
+      setMode: () => {},
+      theme: "light",
+      setTheme: () => {},
+      isDark: false,
+    };
+  }
+  return value;
 }

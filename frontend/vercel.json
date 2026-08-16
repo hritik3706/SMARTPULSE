@@ -1,3 +1,11 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Permissions-Policy", "value": "local-network-access=*" }
+      ]
+    }
+  ],
+  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
 }

@@ -1,60 +1,84 @@
-import axios from "axios";
-
 export const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
-const client = axios.create({
-  baseURL: API_URL,
-  timeout: 45000,
-});
+const usingLoopback = /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])\b/i.test(API_URL);
+
+function needsLocalNetworkHint() {
+  return usingLoopback && typeof window !== "undefined" && window.location.protocol === "https:";
+}
+
+async function send(url, init) {
+  try {
+    return await fetch(url, init);
+  } catch (error) {
+    if (!init.targetAddressSpace) throw error;
+    const fallback = { ...init };
+    delete fallback.targetAddressSpace;
+    return fetch(url, fallback);
+  }
+}
+
+async function request(path, { method = "GET", body, timeout = 45000 } = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const headers = { Accept: "application/json" };
+    const init = { method, headers, signal: controller.signal };
+    if (body !== undefined) {
+      headers["Content-Type"] = "application/json";
+      init.body = JSON.stringify(body);
+    }
+    if (needsLocalNetworkHint()) init.targetAddressSpace = "local";
+    const response = await send(`${API_URL}${path}`, init);
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.message || `Request failed (${response.status})`);
+      error.response = { status: response.status, data };
+      throw error;
+    }
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 export async function getRoot() {
-  const { data } = await client.get("/");
-  return data;
+  return request("/");
 }
 
 export async function getLive() {
-  const { data } = await client.get("/api/live");
-  return data;
+  return request("/api/live");
 }
 
 export async function getHealth() {
-  const { data } = await client.get("/api/health");
-  return data;
+  return request("/api/health");
 }
 
 export async function getAi() {
-  const { data } = await client.get("/api/ai");
-  return data;
+  return request("/api/ai");
 }
 
 export async function getProcesses() {
-  const { data } = await client.get("/api/processes");
-  return data;
+  return request("/api/processes");
 }
 
 export async function killProcess(pid) {
-  const { data } = await client.post("/api/kill", { pid });
-  return data;
+  return request("/api/kill", { method: "POST", body: { pid } });
 }
 
 export async function scanOptimizer() {
-  const { data } = await client.get("/api/optimize/scan");
-  return data;
+  return request("/api/optimize/scan");
 }
 
 export async function runOptimize(actions) {
-  const { data } = await client.post("/api/optimize", { confirm: true, actions });
-  return data;
+  return request("/api/optimize", { method: "POST", body: { confirm: true, actions } });
 }
 
 export async function getUpgradeAdvice(budget) {
-  const { data } = await client.post("/api/advise", { budget });
-  return data;
+  return request("/api/advise", { method: "POST", body: { budget } });
 }
 
 export async function generateReport() {
-  const { data } = await client.post("/api/report");
-  return data;
+  return request("/api/report", { method: "POST", body: {} });
 }
 
 export function reportUrl(filename) {
@@ -66,11 +90,10 @@ export function iconUrl(iconId) {
 }
 
 export async function listReports() {
-  const { data } = await client.get("/api/reports");
+  const data = await request("/api/reports");
   return data.reports || [];
 }
 
 export async function deleteReport(filename) {
-  const { data } = await client.delete(`/api/report/file/${encodeURIComponent(filename)}`);
-  return data;
+  return request(`/api/report/file/${encodeURIComponent(filename)}`, { method: "DELETE" });
 }

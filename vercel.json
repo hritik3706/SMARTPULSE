@@ -3,5 +3,13 @@
   "buildCommand": "npm run build --prefix frontend",
   "outputDirectory": "frontend/dist",
   "framework": "vite",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Permissions-Policy", "value": "local-network-access=*" }
+      ]
+    }
+  ],
+  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
 }

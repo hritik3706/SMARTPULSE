@@ -79,10 +79,10 @@ export function trendFromHistory(points) {
   return { delta, direction: delta > 0 ? "up" : "down" };
 }
 
-export function scoreState(score, metrics = {}) {
-  const cpu = metrics.cpu;
-  const ram = metrics.ram;
-  const disk = metrics.disk;
+export function scoreState(score, metrics) {
+  const cpu = metrics?.cpu;
+  const ram = metrics?.ram;
+  const disk = metrics?.disk;
   const crossed =
     (typeof score === "number" && score < 60) ||
     (typeof cpu === "number" && cpu >= 90) ||

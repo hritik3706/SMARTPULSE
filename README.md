@@ -27,4 +27,6 @@ npm run dev
 
 ## Vercel
 
-The hosted UI talks to `http://127.0.0.1:5000` from your browser. Keep the backend running on this machine when you use the Vercel site.
+Hosted UI: https://smartpulse-hritikkumar772-9984s-projects.vercel.app
+
+The hosted page talks to `http://127.0.0.1:5000` from your browser. Keep `python app.py` running on this PC. If Chrome asks to allow local network access, choose Allow.

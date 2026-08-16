@@ -1,5 +1,6 @@
+import logging
 import os
-import re
+from urllib.parse import urlparse
 
 from flask import Flask, Response, jsonify, request
 from flask_cors import CORS
@@ -24,19 +25,81 @@ app = Flask(__name__)
 app.json = SafeJSONProvider(app)
 app.config["JSON_SORT_KEYS"] = False
 
+LOCAL_ORIGINS = {
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
+}
+
 cors_origins = os.environ.get("CORS_ORIGINS")
 if cors_origins:
-    origins = [item.strip() for item in cors_origins.split(",") if item.strip()]
+    extra_origins = [item.strip() for item in cors_origins.split(",") if item.strip()]
 else:
-    origins = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:4173",
-        "http://127.0.0.1:4173",
-    ]
+    extra_origins = list(LOCAL_ORIGINS)
 
-origins.append(re.compile(r"https://[\w.-]+\.vercel\.app"))
-CORS(app, origins=origins, supports_credentials=False)
+CORS(
+    app,
+    origins=extra_origins + [r"https://.+\.vercel\.app"],
+    supports_credentials=False,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+)
+
+
+def origin_allowed(origin):
+    if not origin:
+        return False
+    if origin in LOCAL_ORIGINS or origin in extra_origins:
+        return True
+    parsed = urlparse(origin)
+    host = (parsed.hostname or "").lower()
+    return parsed.scheme == "https" and host.endswith(".vercel.app")
+
+
+def apply_cors(response, origin=None):
+    origin = origin or request.headers.get("Origin", "")
+    if not origin_allowed(origin):
+        return response
+    response.headers["Access-Control-Allow-Origin"] = origin
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    requested = request.headers.get("Access-Control-Request-Headers", "Content-Type")
+    response.headers["Access-Control-Allow-Headers"] = requested
+    response.headers["Access-Control-Allow-Private-Network"] = "true"
+    response.headers["Access-Control-Allow-Local-Network"] = "true"
+    response.headers["Access-Control-Max-Age"] = "600"
+    response.headers["Vary"] = "Origin"
+    return response
+
+
+DEVTOOLS_PROBES = {"/json", "/json/version", "/json/list", "/json/protocol"}
+
+
+class _IgnoreDevtoolsProbe(logging.Filter):
+    def filter(self, record):
+        message = record.getMessage()
+        return not any(path in message for path in ("/json/version", "/json/list", '"GET /json '))
+
+
+@app.before_request
+def ignore_devtools_probes():
+    if request.path in DEVTOOLS_PROBES:
+        return ("", 204)
+
+
+@app.before_request
+def handle_cors_preflight():
+    if request.method != "OPTIONS":
+        return None
+    origin = request.headers.get("Origin", "")
+    if not origin_allowed(origin):
+        return None
+    return apply_cors(app.make_response(("", 204)), origin)
+
+
+@app.after_request
+def add_cors_headers(response):
+    return apply_cors(response)
 
 EMPTY_PNG = (
     b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01"
@@ -78,6 +141,7 @@ def home():
         "version": "3.0",
         "engine": "SMARTPULSE Nexus",
         "api": "/api/health",
+        "local_network": True,
     })
 
 
@@ -242,6 +306,7 @@ def report_file(filename):
 
 
 if __name__ == "__main__":
+    logging.getLogger("werkzeug").addFilter(_IgnoreDevtoolsProbe())
     debug = os.environ.get("FLASK_DEBUG", "0") == "1"
     print("=" * 60)
     print("SMARTPULSE Nexus")
