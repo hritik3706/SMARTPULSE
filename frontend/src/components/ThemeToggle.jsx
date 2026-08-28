@@ -36,6 +36,7 @@ export function ThemeToggle({ compact = false }) {
             type="button"
             className={mode === item.id ? "is-active" : ""}
             onClick={() => setMode(item.id)}
+            aria-pressed={mode === item.id}
           >
             <Icon size={13} /> {item.label}
           </button>
