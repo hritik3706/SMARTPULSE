@@ -17,6 +17,7 @@ export function AppShell({
 }) {
   return (
     <div className={`app-shell ${collapsed && !mobile ? "is-collapsed" : ""}`}>
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <Sidebar
         page={page}
         onNavigate={onNavigate}
@@ -36,7 +37,7 @@ export function AppShell({
       {mobile && sidebarOpen ? (
         <button type="button" className="sidebar-scrim" aria-label="Close navigation" onClick={onToggleSidebar} />
       ) : null}
-      <main className="main">{children}</main>
+      <main className="main" id="main-content">{children}</main>
       <StatusBar metrics={metrics} ai={ai} online={online} page={page} />
     </div>
   );

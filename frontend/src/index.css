@@ -218,6 +218,23 @@ select:focus-visible {
 
 .app-shell.is-collapsed { grid-template-columns: var(--sidebar-collapsed) 1fr; }
 
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  z-index: 100;
+  padding: 8px 12px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  transform: translateY(-120%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 .sidebar {
   grid-column: 1;
   grid-row: 1 / -1;
