@@ -70,7 +70,7 @@ export function Sidebar({ page, onNavigate, collapsed, open }) {
       </div>
 
       {GROUPS.map((group) => (
-        <div className="nav-group" key={group.label}>
+        <div className="nav-group" key={group.label} role="group" aria-label={group.label}>
           <div className="nav-group-label">{group.label}</div>
           {group.items.map((item) => {
             const Icon = item.icon;
