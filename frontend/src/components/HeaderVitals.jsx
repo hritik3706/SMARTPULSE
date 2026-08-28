@@ -29,7 +29,7 @@ export function HeaderVitals({ metrics }) {
 
   const batteryValue = battery?.available
     ? `${formatPercent(battery.percent)}${battery.plugged ? " · AC" : ""}`
-    : "Mains";
+    : "Desktop";
 
   return (
     <div className="topbar-vitals" aria-label="System vitals">

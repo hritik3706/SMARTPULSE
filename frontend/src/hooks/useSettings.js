@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 
 const KEY = "smartpulse.settings";
+export const ALLOWED_INTERVALS = [1000, 2000, 5000, 10000];
 
 const DEFAULTS = {
   displayName: "Hritik",
@@ -8,11 +9,23 @@ const DEFAULTS = {
   sidebarCollapsed: false,
 };
 
+function sanitize(raw) {
+  const name = String(raw.displayName ?? DEFAULTS.displayName).trim().slice(0, 32) || DEFAULTS.displayName;
+  const interval = ALLOWED_INTERVALS.includes(Number(raw.interval)) ? Number(raw.interval) : DEFAULTS.interval;
+  return {
+    ...DEFAULTS,
+    ...raw,
+    displayName: name,
+    interval,
+    sidebarCollapsed: Boolean(raw.sidebarCollapsed),
+  };
+}
+
 function load() {
   try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || "{}") };
+    return sanitize({ ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || "{}") });
   } catch {
-    return DEFAULTS;
+    return { ...DEFAULTS };
   }
 }
 
@@ -21,7 +34,7 @@ export function useSettings() {
 
   const update = useCallback((partial) => {
     setSettings((prev) => {
-      const next = { ...prev, ...partial };
+      const next = sanitize({ ...prev, ...partial });
       localStorage.setItem(KEY, JSON.stringify(next));
       return next;
     });

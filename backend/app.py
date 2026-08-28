@@ -25,9 +25,13 @@ app = Flask(__name__)
 app.json = SafeJSONProvider(app)
 app.config["JSON_SORT_KEYS"] = False
 
+LOCAL_HOSTS = {"localhost", "127.0.0.1"}
+
 LOCAL_ORIGINS = {
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
     "http://localhost:4173",
     "http://127.0.0.1:4173",
 }
@@ -54,6 +58,8 @@ def origin_allowed(origin):
         return True
     parsed = urlparse(origin)
     host = (parsed.hostname or "").lower()
+    if parsed.scheme in ("http", "https") and host in LOCAL_HOSTS:
+        return True
     return parsed.scheme == "https" and host.endswith(".vercel.app")
 
 
@@ -142,6 +148,15 @@ def home():
         "engine": "SMARTPULSE Nexus",
         "api": "/api/health",
         "local_network": True,
+        "endpoints": [
+            "/api/health",
+            "/api/live",
+            "/api/ai",
+            "/api/processes",
+            "/api/optimize/scan",
+            "/api/advise",
+            "/api/reports",
+        ],
     })
 
 

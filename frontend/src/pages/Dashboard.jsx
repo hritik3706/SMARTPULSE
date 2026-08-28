@@ -53,7 +53,7 @@ export function Dashboard({
       ) : null}
 
       <motion.div className="dash-hero" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-        <div className="label">Welcome back</div>
+        <div className="label">Welcome back{metrics?.hostname ? ` · ${metrics.hostname}` : ""}</div>
         <h2>Hi, {displayName}</h2>
         <p className="muted">{healthCopy(ai?.health_score, ai?.severity)}</p>
       </motion.div>

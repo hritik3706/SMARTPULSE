@@ -55,7 +55,12 @@ export function ScoreCard({ score, insight, metrics, onOpen }) {
         </div>
       </div>
       <p className="score-copy">{body}</p>
-      <button type="button" className={`btn ${state.tone === "danger" ? "btn-danger" : "btn-primary"}`} onClick={onOpen}>
+      <button
+        type="button"
+        className={`btn ${state.tone === "danger" ? "btn-danger" : "btn-primary"}`}
+        onClick={onOpen}
+        aria-label="Open diagnostics for this health score"
+      >
         Open diagnostics
       </button>
     </aside>

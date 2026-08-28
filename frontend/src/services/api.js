@@ -1,6 +1,13 @@
-export const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
+function defaultApiUrl() {
+  if (typeof window === "undefined") return "http://127.0.0.1:5000";
+  const host = window.location.hostname;
+  if (host.endsWith("vercel.app")) return "http://127.0.0.1:5000";
+  return "";
+}
 
-const usingLoopback = /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])\b/i.test(API_URL);
+export const API_URL = import.meta.env.VITE_API_URL || defaultApiUrl();
+
+const usingLoopback = !API_URL || /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])\b/i.test(API_URL);
 
 function needsLocalNetworkHint() {
   return usingLoopback && typeof window !== "undefined" && window.location.protocol === "https:";
@@ -42,7 +49,7 @@ async function request(path, { method = "GET", body, timeout = 45000 } = {}) {
 }
 
 export async function getRoot() {
-  return request("/");
+  return request("/api/health");
 }
 
 export async function getLive() {

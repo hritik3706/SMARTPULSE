@@ -37,7 +37,7 @@ export function Advisor({ metrics, online, onRetry }) {
 
       <div className="page-head">
         <h1>Upgrade advisor</h1>
-        <p>Recommendations from detected hardware and current utilization — not a shopping catalog.</p>
+        <p>Ranks RAM, storage, GPU, and CPU against live utilization, then suggests a spend path for your budget.</p>
       </div>
 
       <section className="panel diag-grid">
@@ -60,6 +60,18 @@ export function Advisor({ metrics, online, onRetry }) {
           <label htmlFor="budget">Budget</label>
           <div className="kpi-value" style={{ fontSize: 28 }}>₹{budget.toLocaleString("en-IN")}</div>
           <input id="budget" className="range" type="range" min="2000" max="100000" step="1000" value={budget} onChange={(event) => setBudget(Number(event.target.value))} />
+          <div className="seg" style={{ marginTop: 10 }}>
+            {[5000, 10000, 25000, 50000].map((amount) => (
+              <button
+                key={amount}
+                type="button"
+                className={budget === amount ? "is-active" : ""}
+                onClick={() => setBudget(amount)}
+              >
+                ₹{amount.toLocaleString("en-IN")}
+              </button>
+            ))}
+          </div>
         </div>
         <button type="button" className="btn btn-primary" style={{ marginTop: 12 }} onClick={analyze} disabled={busy || !online}>
           {busy ? "Analyzing…" : "Analyze upgrade"}

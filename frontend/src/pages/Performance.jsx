@@ -42,7 +42,7 @@ export function Performance({ metrics, history, loading, online, interval, onRet
 
       <div className="page-head">
         <h1>Performance</h1>
-        <p>CPU, memory, graphics, storage, and network on one screen.</p>
+        <p>Live specs and charts for CPU, memory, GPU, storage, battery, and network.</p>
       </div>
 
       <div className="bento">

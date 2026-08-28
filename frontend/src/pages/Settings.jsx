@@ -2,12 +2,17 @@ import { ThemeToggle } from "../components/ThemeToggle";
 import { Input } from "../components/Input";
 import { API_URL } from "../services/api";
 import { useBackendStatus } from "../hooks/useBackendStatus";
+import { ALLOWED_INTERVALS } from "../hooks/useSettings";
 
-const INTERVALS = [
-  { ms: 1000, label: "1 second" },
-  { ms: 2000, label: "2 seconds" },
-  { ms: 5000, label: "5 seconds" },
-];
+const INTERVAL_LABELS = {
+  1000: "1 second",
+  2000: "2 seconds",
+  5000: "5 seconds",
+  10000: "10 seconds",
+};
+
+const INTERVALS = ALLOWED_INTERVALS.map((ms) => ({ ms, label: INTERVAL_LABELS[ms] || `${ms} ms` }));
+const ENGINE_ORIGIN = API_URL || (typeof window !== "undefined" ? window.location.origin : "http://127.0.0.1:5000");
 
 export function Settings({ settings, update, online }) {
   const status = useBackendStatus();
@@ -69,9 +74,9 @@ export function Settings({ settings, update, online }) {
         <div className="setting-row">
           <div>
             <strong>API origin</strong>
-            <div className="muted">Configured via VITE_API_URL.</div>
+            <div className="muted">Local Vite proxies /api to the engine. Hosted UI uses 127.0.0.1:5000.</div>
           </div>
-          <span className="mono">{API_URL}</span>
+          <span className="mono">{ENGINE_ORIGIN}</span>
         </div>
         <div className="setting-row">
           <div>
@@ -90,6 +95,16 @@ export function Settings({ settings, update, online }) {
             <div className="muted">Live system intelligence · Diagnostic Engine v3</div>
           </div>
           <span className="muted">3.0</span>
+        </div>
+        <div className="setting-row">
+          <div>
+            <strong>Source</strong>
+            <div className="muted">Repository and hosted interface.</div>
+          </div>
+          <span className="row" style={{ gap: 8 }}>
+            <a className="btn" href="https://github.com/hritik3706/SMARTPULSE" target="_blank" rel="noreferrer">GitHub</a>
+            <a className="btn" href="https://smartpulse-lovat.vercel.app" target="_blank" rel="noreferrer">Live UI</a>
+          </span>
         </div>
       </section>
     </div>

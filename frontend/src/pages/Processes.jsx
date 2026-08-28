@@ -68,7 +68,7 @@ export function Processes({ processes, processCount, loading, online, onRetry, o
       <div className="page-head row">
         <div>
           <h1>Processes</h1>
-          <p>{processCount ?? rows.length} running</p>
+          <p>{processCount ?? rows.length} running · search, filter by CPU or memory, then end a process</p>
         </div>
       </div>
 

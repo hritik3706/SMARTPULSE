@@ -111,7 +111,7 @@ export function Optimizer({ online, onRetry }) {
 
       <div className="page-head">
         <h1>Optimizer</h1>
-        <p>Scan first. Only the selected caches are cleared. Installed apps are not touched.</p>
+        <p>Scan first. Then clear only selected temp files, internet cache, thumbnails, DNS, or Recycle Bin. Installed apps stay untouched.</p>
       </div>
 
       <div className="opt-grid">

@@ -49,7 +49,7 @@ export function Header({
       <HeaderVitals metrics={metrics} />
       <div className="topbar-right">
         <ConnectionStatus online={online} />
-        <span className="muted" style={{ fontSize: 14, fontWeight: 600 }}>
+        <span className="muted" style={{ fontSize: 14, fontWeight: 600 }} aria-live="polite">
           {relativeTime(lastUpdated)}
         </span>
         <ThemeToggle compact />

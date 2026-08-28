@@ -42,7 +42,7 @@ export function AIDoctor({ ai, metrics, loading, online, onRetry, onRefresh }) {
       <div className="page-head row">
         <div>
           <h1>Diagnostics</h1>
-          <p>{ai?.engine || "SMARTPULSE Nexus"} · last analyzed {ai?.analyzed_at ? new Date(ai.analyzed_at).toLocaleTimeString() : "just now"}</p>
+          <p>{ai?.engine || "SMARTPULSE Nexus"} scores CPU, RAM, GPU, and disk, then lists recommended fixes · last analyzed {ai?.analyzed_at ? new Date(ai.analyzed_at).toLocaleTimeString() : "just now"}</p>
         </div>
         <div className="row" style={{ justifyContent: "flex-end" }}>
           <button type="button" className="btn" onClick={onRefresh}>Refresh</button>

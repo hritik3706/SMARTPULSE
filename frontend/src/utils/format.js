@@ -50,7 +50,8 @@ export function relativeTime(timestamp) {
   const seconds = Math.max(0, (Date.now() - timestamp) / 1000);
   if (seconds < 1) return "just now";
   if (seconds < 10) return `${seconds.toFixed(1)}s ago`;
-  return `${Math.round(seconds)}s ago`;
+  if (seconds < 60) return `${Math.round(seconds)}s ago`;
+  return `${Math.round(seconds / 60)}m ago`;
 }
 
 export function metricTone(value, { warn = 75, crit = 90 } = {}) {
