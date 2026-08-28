@@ -1,6 +1,6 @@
 export function Section({ title, description, action, collapsible = false, collapsed = false, onToggle, children }) {
   return (
-    <section className="panel">
+    <section className="panel" aria-label={title}>
       <div className="panel-pad row" style={{ borderBottom: collapsed ? 0 : "1px solid var(--border)" }}>
         <div>
           <div className="section-title">{title}</div>

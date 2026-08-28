@@ -10,7 +10,7 @@ export function Panel({
   action,
 }) {
   return (
-    <section className="panel" data-panel-id={id}>
+    <section className="panel" data-panel-id={id} aria-label={title || undefined}>
       {(title || action || minimizable || onRemove) ? (
         <div className="panel-pad row" style={{ borderBottom: minimized ? 0 : "1px solid var(--border)" }}>
           <div>
