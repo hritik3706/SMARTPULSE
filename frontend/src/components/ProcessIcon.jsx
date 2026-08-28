@@ -19,7 +19,7 @@ export function ProcessIcon({ process, size = 32 }) {
     <img
       className="proc-icon"
       src={src}
-      alt=""
+      alt={`${name} icon`}
       width={size}
       height={size}
       onError={() => setFailed(true)}
