@@ -21,7 +21,7 @@ const CHART_COLORS = {
 
 function Empty({ height }) {
   return (
-    <div className="chart-soft" style={{ height, display: "grid", placeItems: "center" }}>
+    <div className="chart-soft" style={{ height, display: "grid", placeItems: "center" }} role="status">
       <span className="muted">Waiting for live samples</span>
     </div>
   );
