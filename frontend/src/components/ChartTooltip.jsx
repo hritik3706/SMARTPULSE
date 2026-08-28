@@ -11,7 +11,7 @@ export function ChartTooltip({ active, payload, label, unit = "%" }) {
   });
   if (!rows.length) return null;
   return (
-    <div className="tooltip">
+    <div className="tooltip" role="tooltip">
       <div className="tooltip-time">{label}</div>
       {rows.map((entry) => (
         <div key={entry.dataKey} className="tooltip-row">
