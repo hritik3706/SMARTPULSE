@@ -5,7 +5,12 @@ import "./index.css";
 import App from "./App.jsx";
 import { ThemeProvider } from "./hooks/ThemeProvider";
 
-createRoot(document.getElementById("root")).render(
+const root = document.getElementById("root");
+if (!root) {
+  throw new Error("SMARTPULSE UI root element is missing");
+}
+
+createRoot(root).render(
   <StrictMode>
     <ThemeProvider>
       <BrowserRouter>
