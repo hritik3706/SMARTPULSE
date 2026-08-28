@@ -12,7 +12,7 @@ export function StatCard({ kind, label, value, percent, history, hint, tone = "p
   const Icon = ICONS[kind] || Cpu;
   const trend = trendDisplay(history);
   return (
-    <article className={`stat-card tone-${tone}`}>
+    <article className={`stat-card tone-${tone}`} aria-label={label}>
       <div className={`stat-ico tone-${tone}`}>
         <Icon size={22} />
       </div>

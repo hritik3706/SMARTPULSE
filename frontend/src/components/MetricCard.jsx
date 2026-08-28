@@ -18,7 +18,7 @@ function MetricCardInner({
   const trend = trendDisplay(history);
 
   return (
-    <div className="kpi">
+    <div className="kpi" aria-label={label}>
       <div className="row">
         <span className="label">{label}</span>
         <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
