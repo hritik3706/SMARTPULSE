@@ -29,6 +29,7 @@ export function ProcessRow({ process, onTerminate }) {
           className="btn btn-tertiary"
           disabled={protectedProcess}
           title={protectedProcess ? "Protected system process" : "Terminate"}
+          aria-label={protectedProcess ? `${process.name} is protected` : `End ${process.name || "process"}`}
           onClick={() => onTerminate(process)}
         >
           {protectedProcess ? "—" : "End"}

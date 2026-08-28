@@ -8,7 +8,7 @@ export function Terminal({ logs }) {
   }, [logs]);
 
   return (
-    <div className="events" ref={scroller} aria-label="Recent events">
+    <div className="events" ref={scroller} role="log" aria-label="Recent events" aria-live="polite">
       {(logs || []).slice(-12).map((entry, index) => (
         <div key={`${entry.time}-${index}`}>
           <span className="ts">{entry.time}</span>

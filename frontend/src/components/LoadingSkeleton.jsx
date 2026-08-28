@@ -1,6 +1,6 @@
 export function LoadingSkeleton() {
   return (
-    <div className="page" aria-busy="true" aria-live="polite">
+    <div className="page" aria-busy="true" aria-live="polite" aria-label="Loading dashboard">
       <div className="panel panel-pad">
         <div className="skeleton" style={{ width: 180, height: 18, marginBottom: 12 }} />
         <div className="skeleton" style={{ width: "55%", height: 28 }} />

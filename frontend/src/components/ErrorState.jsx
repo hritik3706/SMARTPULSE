@@ -7,7 +7,7 @@ function hostedHint(body) {
 
 export function ErrorState({ title, body, actionLabel = "Reconnect", onRetry }) {
   return (
-    <div className="banner" role="alert">
+    <div className="banner" role="alert" aria-live="assertive">
       <div>
         <strong>{title}</strong>
         <div className="muted">{hostedHint(body)}</div>
