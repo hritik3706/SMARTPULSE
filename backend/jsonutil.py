@@ -1,3 +1,4 @@
+"""JSON encoding that never emits NaN or Infinity for the Flask API."""
 import math
 
 from flask.json.provider import DefaultJSONProvider
