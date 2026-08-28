@@ -16,3 +16,5 @@ database/
 .idea/
 .vscode/
 .vercel
+*.log
+npm-debug.log*
