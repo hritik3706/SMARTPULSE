@@ -2,12 +2,13 @@
   "name": "smartpulse",
   "private": true,
   "version": "3.0.0",
+  "description": "SMARTPULSE Nexus UI — live Windows health dashboard for CPU, memory, GPU, disk, and processes.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --host 127.0.0.1 --port 4173"
   },
   "dependencies": {
     "axios": "^1.18.0",
