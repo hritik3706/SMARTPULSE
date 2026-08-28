@@ -7,7 +7,9 @@ export function BrandLogo({ size = 40 }) {
       viewBox="0 0 40 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
+      aria-hidden="false"
+      role="img"
+      aria-label="SMARTPULSE"
     >
       <defs>
         <linearGradient id="sp-mark" x1="8" y1="4" x2="36" y2="38" gradientUnits="userSpaceOnUse">
