@@ -6,7 +6,7 @@ function SparklineInner({ data, color = "var(--accent)" }) {
   if (points.length < 2) return <div className="spark" />;
   const id = `sp-${color.replace(/[^a-z0-9]/gi, "")}`;
   return (
-    <div className="spark">
+    <div className="spark" aria-hidden="true">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={points} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
           <defs>
